@@ -32,8 +32,8 @@ class AuthController extends Controller
             // $user->notify(new EmailVerificationNotification($user->email, $this->otp));
             // Generate token
             $token = $user->createToken('auth_token')->plainTextToken;
-    
-            return $this->successWithToken(message: 'We sent you an OTP, check your email', code: 201, token: $token);
+            $user->sendEmailVerificationNotification();
+            return $this->successWithToken(message: 'We sent you a LINK, check your email', code: 201, token: $token);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }
@@ -96,5 +96,10 @@ class AuthController extends Controller
     public function getUsers(Request $request){
         $users = User::all();
         return $this->success($users);
+    }
+
+    public function resendEmailVerification(Request $request){
+        Auth::user()->sendEmailVerificationNotification();
+        return $this->success('Email verification link sent.');
     }
 }

@@ -45,6 +45,7 @@ Route::apiResource('/lectures', LectureController::class);
 Route::apiResource('/coupons', CouponController::class);
 
 Route::get('/users', [AuthController::class, 'getUsers']);
+Route::post('/users/email/verification', [AuthController::class, 'resendEmailVerification'])->middleware('auth:sanctum');
 
 //attach categories to course
 Route::post('/test', [CourseCategoryController::class, 'test'])->middleware('auth:sanctum');
