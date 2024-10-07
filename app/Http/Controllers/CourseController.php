@@ -34,7 +34,7 @@ class CourseController extends Controller
     public function show(string $id)
     {
         $course = Course::with(['lessons.lectures', 'subscriptionPlan','categories'])->find($id);
-        return $this->success($course);
+        return $this->success(new CourseResource($course));
     }
 
     /**
@@ -148,6 +148,11 @@ class CourseController extends Controller
     {
         $reviews = $course->reviews()->get();
         return $this->success($reviews);
+    }
+
+    public function getRandomCourse(Request $request){
+        $randomCourse = Course::inRandomOrder()->take(7)->get();
+        return $this->success($randomCourse);
     }
 
 }

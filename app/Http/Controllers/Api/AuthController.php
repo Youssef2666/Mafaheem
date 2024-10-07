@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
@@ -32,7 +33,7 @@ class AuthController extends Controller
             // $user->notify(new EmailVerificationNotification($user->email, $this->otp));
             // Generate token
             $token = $user->createToken('auth_token')->plainTextToken;
-            $user->sendEmailVerificationNotification();
+            // $user->sendEmailVerificationNotification();
             return $this->successWithToken(message: 'We sent you a LINK, check your email', code: 201, token: $token);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
@@ -101,5 +102,28 @@ class AuthController extends Controller
     public function resendEmailVerification(Request $request){
         Auth::user()->sendEmailVerificationNotification();
         return $this->success('Email verification link sent.');
+    }
+
+    public function verify(Request $request, $id, $hash)
+    {
+        // Find the user by ID
+        $user = User::findOrFail($id);
+
+        // Check if the hash matches
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['error' => 'Invalid verification link'], 403);
+        }
+
+        // Check if the user has already verified their email
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified'], 200);
+        }
+
+        // Mark the user as verified
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
+        }
+        $message = 'Email verified successfully';
+        return view('email', compact('message'));
     }
 }

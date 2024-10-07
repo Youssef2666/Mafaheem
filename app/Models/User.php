@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,6 +18,11 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+    //     return true;
+    // }
 
     /**
      * The attributes that are mass assignable.
@@ -83,5 +89,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function userProgresses()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
+    public function completedLecturesInCourse(Course $course)
+    {
+        return $this->userProgresses()
+                    ->whereHas('lecture.lesson.course', function($query) use ($course) {
+                        $query->where('id', $course->id);
+                    })
+                    ->where('completed', true)
+                    ->count();
     }
 }

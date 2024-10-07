@@ -5,3 +5,29 @@
 [x-cloak] {
     display: none;
 }
+
+/* Styling to center the card */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.card h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #4CAF50; /* Green color for success */
+}

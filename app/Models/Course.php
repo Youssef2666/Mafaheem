@@ -67,4 +67,19 @@ class Course extends Model
         return $this->belongsToMany(Coupon::class, 'coupon_course')->withTimestamps();
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'course_order');
+    }
+
+    public function roadmaps()
+    {
+        return $this->belongsToMany(Roadmap::class, 'course_roadmap');
+    }
+
+    public function userProgresses()
+    {
+        return $this->hasMany(UserProgress::class);
+    }
+
 }

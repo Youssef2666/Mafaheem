@@ -38,3 +38,7 @@ Route::get('auth/facebook/callback', function () {
 });
 
 Route::get('users',[FaceBookController::class,'users']);
+
+Route::get('dodo', function(){
+    return view('email');
+});

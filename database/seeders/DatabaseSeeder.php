@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'test4@example.com',
         ]);
         User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
+        User::factory()->create([
             'name' => 'Test User2',
             'email' => 'test2@example.com',
         ]);
@@ -37,6 +41,11 @@ class DatabaseSeeder extends Seeder
             SubscriptionPlanSeeder::class,
             CourseSeeder::class,
             WorkshopSeeder::class,
+            LessonSeeder::class,
+            LectureSeeder::class,
+            CategoryCourseSeeder::class,
+            RoadMapSeeder::class,
+            CourseRoadmapSeeder::class
         ]);
     }
 }

@@ -1,18 +1,22 @@
 <?php
 
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\PasswordController;
-use App\Http\Controllers\CouponController;
-use App\Http\Controllers\CourseCategoryController;
-use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\LectureController;
-use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\RoadMapController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\WorkshopController;
-use App\Models\Enrollment;
+use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseProgressController;
+use App\Http\Controllers\SubscriptionPlanController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -28,6 +32,7 @@ Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    // Route::post('/verify', [AuthController::class, 'verify']);
 });
 
 Route::get('/me', [AuthController::class, 'whoAmI'])->middleware('auth:sanctum');
@@ -43,6 +48,20 @@ Route::apiResource('/workshops', WorkshopController::class);
 Route::apiResource('/enrollments', Enrollment::class);
 Route::apiResource('/lectures', LectureController::class);
 Route::apiResource('/coupons', CouponController::class);
+Route::apiResource('/roadmaps', RoadMapController::class);
+Route::apiResource('/carts', CartController::class)->middleware('auth:sanctum');
+Route::apiResource('/orders', OrderController::class)->middleware('auth:sanctum');
+
+// Route to mark a lecture as completed
+Route::post('/courses/{courseId}/lessons/{lessonId}/lectures/{lectureId}/complete', [CourseProgressController::class, 'completeLecture'])->middleware('auth:sanctum');
+// Route to get course progress for the authenticated user
+Route::get('/courses/{courseId}/progress', [CourseProgressController::class, 'getCourseProgress'])->middleware('auth:sanctum');
+
+//roadmap
+Route::post('/roadmaps/{id}/detach/course', [RoadMapController::class, 'detachCourseFromRoadmap']);
+Route::post('/roadmaps/{roadmapId}/add-courses', [RoadMapController::class, 'addCourses']);
+
+Route::post('/carts/remove/item', [CartController::class, 'removeFromCart'])->middleware('auth:sanctum');
 
 Route::get('/users', [AuthController::class, 'getUsers']);
 Route::post('/users/email/verification', [AuthController::class, 'resendEmailVerification'])->middleware('auth:sanctum');
@@ -67,3 +86,11 @@ Route::get('/courses/{course}/get/reviews', [CourseController::class, 'getCourse
 //coupons
 Route::post('/coupons/try/assign', [CouponController::class, 'assignCouponToCourse'])->middleware('auth:sanctum');
 Route::post('/coupons/apply/coupon', [CouponController::class, 'applyCoupon'])->middleware('auth:sanctum');
+
+
+Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])
+    ->name('verification.verify');
+
+
+//promo random courses
+Route::get('/courses/random/get', [CourseController::class, 'getRandomCourse']);

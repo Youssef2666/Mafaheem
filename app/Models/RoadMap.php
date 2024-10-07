@@ -13,4 +13,16 @@ class RoadMap extends Model
         'title',
         'description',
     ];
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_roadmap');
+    }
+
+    public function calculateDiscountedPrice()
+    {
+        $totalPrice = $this->courses->sum('price'); // Sum the price of all courses
+        $discountedPrice = $totalPrice * 0.9; // Apply a 10% discount
+        return $discountedPrice;
+    }
 }

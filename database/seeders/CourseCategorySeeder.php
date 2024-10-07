@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class CourseCategorySeeder extends Seeder
@@ -48,8 +47,60 @@ class CourseCategorySeeder extends Seeder
             [
                 'name' => 'Software Testing',
                 'description' => 'Learn the basics of software testing',
-            ]
-            ];
+            ],
+            [
+                'name' => 'الرياضيات',
+                'description' => 'تعلم أساسيات الرياضيات',
+            ],
+            [
+                'name' => 'الإحصاء والاحتمالات',
+                'description' => 'تعلم أساسيات الإحصاء والاحتمالات',
+            ],
+            [
+                'name' => 'الفيزياء',
+                'description' => 'تعلم أساسيات الفيزياء',
+            ],
+            [
+                'name' => 'الكيمياء',
+                'description' => 'تعلم أساسيات الكيمياء',
+            ],
+            [
+                'name' => 'الهندسة الكهربائية',
+                'description' => 'تعلم أساسيات الهندسة الكهربائية',
+            ],
+            [
+                'name' => 'الطب والصحة',
+                'description' => 'تعلم أساسيات الطب والصحة',
+            ],
+            [
+                'name' => 'اللغة والأدب',
+                'description' => 'تعلم أساسيات اللغة والأدب',
+            ],
+            [
+                'name' => 'التاريخ',
+                'description' => 'تعلم أساسيات التاريخ',
+            ],
+            [
+                'name' => 'الفلسفة',
+                'description' => 'تعلم أساسيات الفلسفة',
+            ],
+            [
+                'name' => 'علم النفس',
+                'description' => 'تعلم أساسيات علم النفس',
+            ],
+            [
+                'name' => 'القانون',
+                'description' => 'تعلم أساسيات القانون',
+            ],
+            [
+                'name' => 'التسويق والإعلان',
+                'description' => 'تعلم أساسيات التسويق والإعلان',
+            ],
+            [
+                'name' => 'الاقتصاد وإدارة الأعمال',
+                'description' => 'تعلم أساسيات الاقتصاد وإدارة الأعمال',
+            ],
+        ];
         foreach ($courseCategories as $courseCategory) {
             \App\Models\Category::create($courseCategory);
         }

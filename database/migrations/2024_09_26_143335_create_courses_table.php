@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(SubscriptionPlan::class, 'subscription_plan_id');
             $table->foreignIdFor(User::class, 'instructor_id');
             $table->string('image')->nullable();
-            $table->enum('level', ['beginner', 'intermediate', 'advanced']);
+            $table->enum('level', ['مبتدئ', 'متوسط', 'متقدم']);
             $table->decimal('price', 8, 2)->default(0);
             $table->integer('duration')->default(0);
             $table->text('what_you_will_learn')->nullable();
