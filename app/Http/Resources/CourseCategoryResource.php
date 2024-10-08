@@ -18,6 +18,8 @@ class CourseCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'courses_count' => $this->courses_count,
+            // 'courses' => CourseResource::collection($this->whenLoaded('courses')), 
         ];
     }
 }

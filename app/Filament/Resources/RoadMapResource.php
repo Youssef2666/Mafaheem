@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\RoadMapResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RoadMapResource\RelationManagers;
+use App\Filament\Resources\RoadMapResource\RelationManagers\CoursesRelationManager;
+use App\Models\Course;
+use Filament\Forms\Components\Section;
 
 class RoadMapResource extends Resource
 {
@@ -30,6 +33,14 @@ class RoadMapResource extends Resource
 
                 TextInput::make('description')
                 ->required(),
+
+                Section::make('Courses')->schema(
+                    [
+                        Forms\Components\Select::make('courses')
+                        ->multiple()
+                        ->relationship('courses', 'title')
+                    ]
+                )
             ]);
     }
 
@@ -61,7 +72,7 @@ class RoadMapResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CoursesRelationManager::class,
         ];
     }
 

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
-use App\Traits\ResponseTrait;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -24,30 +26,58 @@ class OrderController extends Controller
     {
         $cart = Cart::where('user_id', Auth::id())->first();
 
-        if (!$cart) {
+        if (!$cart || $cart->items->isEmpty()) {
             return response()->json(['message' => 'Your cart is empty.'], 404);
         }
+        $total = $this->calculateTotalPrice($cart);
+        return $total;
 
-        if ($cart->courses->isEmpty()) {
-            return response()->json(['message' => 'Your cart has no courses.'], 404);
-        }
-
-        // Calculate total price from cart's courses
-        $totalPrice = $cart->courses()->sum('price');
-
-        // Create the order with cart_id
+        // Create the order with user_id
         $order = Order::create([
-            'user_id' => Auth::id(),
             'cart_id' => $cart->id,
-            'total_price' => $totalPrice,
+            'user_id' => Auth::id(),
+            'total_price' => $this->calculateTotalPrice($cart),
         ]);
 
-        // Attach courses to the order
-        $order->courses()->attach($cart->courses->pluck('id'));
+        // Attach items to the order
+        foreach ($cart->items as $cartItem) {
+            $orderItem = new OrderItem([
+                'item_id' => $cartItem->item_id,
+                'item_type' => $cartItem->item_type,
+                'order_id' => $order->id,
+            ]);
+            $order->items()->save($orderItem);
+        }
 
-        $cart->courses()->detach(); // Clear the cart
+        // Clear the cart
+        $cart->items()->delete();
 
         return response()->json(['message' => 'Order created successfully!', 'order' => $order], 201);
+    }
+
+    private function calculateTotalPrice($cart)
+    {
+        $totalPrice = 0;
+
+        foreach ($cart->items as $cartItem) {
+            $item = $cartItem->item; // This retrieves the polymorphic item
+
+            // Log the item details for debugging
+            Log::info("CartItem ID: " . $cartItem->id . ", Item: ", [
+                'item_id' => $cartItem->item_id,
+                'item_type' => $cartItem->item_type,
+                'item' => $item,
+            ]);
+
+            if ($item && isset($item->price)) {
+                $totalPrice += $item->price; // Ensure the item has a price attribute
+            } else {
+                // Log if the item or price is missing
+                Log::warning("Price not found for item ID: " . $cartItem->item_id . ", Type: " . $cartItem->item_type);
+            }
+        }
+
+        return $totalPrice;
     }
 
     /**
@@ -69,7 +99,7 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $item_id, string $item_type)
     {
         //
     }

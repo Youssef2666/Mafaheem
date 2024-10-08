@@ -15,7 +15,7 @@ class CourseCategoryController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $courseCategories = Category::all();
+        $courseCategories = Category::withCount('courses')->with('courses')->get();
         return $this->success(CourseCategoryResource::collection($courseCategories));
     }
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\SubscriptionPlanController;
+use App\Http\Controllers\RoadMapEnrollmentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -94,3 +95,8 @@ Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])
 
 //promo random courses
 Route::get('/courses/random/get', [CourseController::class, 'getRandomCourse']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/roadmapss/enroll', [RoadMapEnrollmentController::class, 'enrollInRoadMap']);
+    Route::get('/roadmapss/enrollments', [RoadMapEnrollmentController::class, 'viewEnrollments']);
+});

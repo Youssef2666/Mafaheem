@@ -12,7 +12,7 @@ class RoadMapController extends Controller
     public function index()
     {
         // Fetch all roadmaps with their associated courses
-        $roadmaps = RoadMap::with('courses')->get();
+        $roadmaps = RoadMap::with('courses', 'courses.lessons', 'courses.lessons.lectures','courses.categories','courses.subscriptionPlan')->get();
 
         // Calculate the discounted price for each roadmap using the model method
         $roadmaps->transform(function ($roadmap) {

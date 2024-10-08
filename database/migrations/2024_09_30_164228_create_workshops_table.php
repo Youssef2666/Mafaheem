@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -17,11 +17,13 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'instructor_id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('date'); 
-            $table->time('time'); 
+            $table->date('date');
+            $table->time('time');
             $table->integer('capacity')->unsigned();
             $table->decimal('price', 8, 2)->nullable();
-            $table->timestamps(); // Created at & Updated at
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->timestamps();
         });
     }
 

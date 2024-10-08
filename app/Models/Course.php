@@ -82,4 +82,24 @@ class Course extends Model
         return $this->hasMany(UserProgress::class);
     }
 
+    // public function averageRating()
+    // {
+    //     return $this->ratings()->avg('course_ratings.rating') ?? 0;
+    // }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->ratings()->avg('course_ratings.rating') ?? 0; // Default to 0 if no ratings exist
+    }
+
+    public function cartItems()
+    {
+        return $this->morphMany(CartItem::class, 'item');
+    }
+
+    public function orderItems()
+    {
+        return $this->morphMany(OrderItem::class, 'item');
+    }
+
 }
