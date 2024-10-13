@@ -81,10 +81,16 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             ->withPivot('rating')
             ->withTimestamps();
     }
+    public function ratedRoadmaps()
+    {
+        return $this->belongsToMany(RoadMap::class, 'rating_roadmap')
+            ->withPivot('rating')
+            ->withTimestamps();
+    }
 
     public function certificates()
     {
-        return $this->belongsToMany(Course::class, 'certificates', 'user_id', 'course_id')->withPivot('issued_at')->withTimestamps();
+        return $this->belongsToMany(Course::class, 'certificates', 'user_id', 'course_id')->withPivot('name', 'image', 'code', 'download_link' ,'issued_at')->withTimestamps();
     }
 
     public function reviews()
@@ -110,5 +116,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function roadMapEnrollments()
     {
         return $this->hasMany(RoadMapEnrollment::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
 }

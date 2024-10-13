@@ -50,11 +50,13 @@ class RoadMapResource extends Resource
             ->columns([
                 TextColumn::make('title')
                 ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->label('الاسم'),
 
                 TextColumn::make('description')
                 ->searchable()
-                ->sortable(),
+                ->sortable()
+                ->label('التفاصيل'),
             ])
             ->filters([
                 //

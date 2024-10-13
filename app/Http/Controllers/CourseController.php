@@ -8,13 +8,27 @@ use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\CourseResource;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseController extends Controller
 {
     use ResponseTrait;
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::with(['lessons.lectures', 'subscriptionPlan','categories'])->get();
+        $courses = Course::query()
+        ->when($request->search, function (Builder $builder) use ($request) {
+            $builder->where('title', 'like', "%{$request->search}%");
+        })
+        ->when($request->category_id, function (Builder $builder) use ($request) {
+            $builder->whereHas('categories', function (Builder $query) use ($request) {
+                $query->where('categories.id', $request->category_id);
+            });
+        })
+        ->when($request->subscription_plan_id, function (Builder $builder) use ($request) {
+            $builder->where('subscription_plan_id', $request->subscription_plan_id);
+        })
+        ->with(['lessons.lectures', 'subscriptionPlan','categories'])
+        ->get();
         return $this->success([
             'total_courses' => $courses->count(),
             'courses' => CourseResource::collection($courses),

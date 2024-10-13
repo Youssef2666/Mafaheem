@@ -44,7 +44,13 @@ class WorkshopResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')->searchable()->sortable()->label('الاسم'),
+                Tables\Columns\TextColumn::make('instructor.name')->searchable()->sortable()->label('اسم المدرب'),
+                Tables\Columns\TextColumn::make('price')->searchable()->sortable()->label('السعر'),
+                Tables\Columns\TextColumn::make('date')->searchable()->sortable()->label('التاريخ'),
+                Tables\Columns\TextColumn::make('capacity')->searchable()->sortable()->label('السعة'),
+                Tables\Columns\TextColumn::make('description')->searchable()->sortable()->label('التفاصيل'),
+
             ])
             ->filters([
                 //

@@ -35,20 +35,22 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')->searchable()->sortable(),
-                TextColumn::make('instructor.name')->label('Instructor Name'),
-                TextColumn::make('level')->sortable(),
-                TextColumn::make('price'),
+                TextColumn::make('id')->searchable()->sortable()->label('المعرف'),
+                TextColumn::make('title')->searchable()->sortable()->label('الاسم'),
+                TextColumn::make('instructor.name')->label('Instructor Name')->label('اسم المدرب'),
+                TextColumn::make('level')->sortable()->label('المستوى'),
+                TextColumn::make('price')->label('السعر'),
                 TextColumn::make('average_rating') // Use the accessor
-                    ->label('Average Rating')
+                    ->label('متوسط التقييم')
                     ->formatStateUsing(fn($state) => round($state, 1)),
             ])
             ->filters([
                 SelectFilter::make('level')
+                ->label('المستوى')
                     ->options([
-                        'beginner' => 'Beginner',
-                        'intermediate' => 'Intermediate',
-                        'advanced' => 'Advanced',
+                        'مبتدئ' => 'مبتدئ',
+                        'متوسط' => 'متوسط',
+                        'متقدم' => 'متقدم',
                     ]),
             ])
             ->actions([

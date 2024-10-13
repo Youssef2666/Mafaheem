@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoadMapResource;
 use App\Models\RoadMap;
-use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
+use Illuminate\Support\Facades\Auth;
 
 class RoadMapController extends Controller
 {
     use ResponseTrait;
     public function index()
     {
-        // Fetch all roadmaps with their associated courses
-        $roadmaps = RoadMap::with('courses', 'courses.lessons', 'courses.lessons.lectures','courses.categories','courses.subscriptionPlan')->get();
+        $roadmaps = RoadMap::withCount('enrollments')->with('courses', 'courses.lessons', 'courses.lessons.lectures', 'courses.categories', 'courses.subscriptionPlan')->get();
 
-        // Calculate the discounted price for each roadmap using the model method
         $roadmaps->transform(function ($roadmap) {
             $roadmap->discounted_price = $roadmap->calculateDiscountedPrice();
             return $roadmap;
         });
 
-        return $this->success($roadmaps);
+        return $this->success(RoadMapResource::collection($roadmaps));
     }
 
     /**
@@ -56,13 +56,13 @@ class RoadMapController extends Controller
      */
     public function show(string $id)
     {
-        $roadmap = RoadMap::with('courses')->find($id);
+        $roadmap = RoadMap::withCount('enrollments')->with('courses')->find($id);
         $price = $roadmap->calculateDiscountedPrice();
         $originalPrice = $roadmap->courses()->sum('price');
         return $this->success([
             'original_price' => $originalPrice,
             'discounted_price' => $price,
-            'roadmap' => $roadmap,
+            'roadmap' => new RoadMapResource($roadmap),
         ]);
     }
 
@@ -118,6 +118,22 @@ class RoadMapController extends Controller
             'success' => true,
             'message' => 'Courses added to roadmap successfully!',
             'roadmap' => $roadmap->load('courses'), // Optionally include the associated courses
+        ], 200);
+    }
+
+    public function rateRoadmap(Request $request)
+    {
+        $request->validate([
+            'road_map_id' => 'required|exists:road_maps,id',
+            'rating' => 'required|integer|between:1,5', // Ensure rating is between 1 and 5
+        ]);
+
+        Auth::user()->ratedRoadmaps()->sync([
+            $request->road_map_id => ['rating' => $request->rating],
+        ], false); // false to not detach other ratings
+
+        return response()->json([
+            'message' => 'Rating submitted successfully!',
         ], 200);
     }
 }

@@ -18,8 +18,10 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Course::class);
             $table->date('issued_at');
+            $table->string('name');
             $table->string('image')->nullable();
             $table->string('code')->unique()->nullable()->comment('Unique code for the certificate');
+            $table->string('download_link')->nullable();
             $table->unique(['user_id', 'course_id']);
             $table->timestamps();
         });

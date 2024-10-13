@@ -10,7 +10,7 @@ trait ResponseTrait
     protected function success($data = null, string $message = 'Operation successful', int $status = 200): JsonResponse
 {
     return response()->json([
-        'status' => 'success',
+        'status' => true,
         'message' => $message,
         'data' => $data,
     ], $status);

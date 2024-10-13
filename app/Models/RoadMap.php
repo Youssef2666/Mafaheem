@@ -40,4 +40,11 @@ class RoadMap extends Model
     {
         return $this->hasMany(RoadMapEnrollment::class);
     }
+
+    public function usersWhoRated()
+    {
+        return $this->belongsToMany(User::class, 'rating_roadmap')
+            ->withPivot('rating') // Include the rating value from the pivot table
+            ->withTimestamps(); // Include created_at and updated_at timestamps
+    }
 }

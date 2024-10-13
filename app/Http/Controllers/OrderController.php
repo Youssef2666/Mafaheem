@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Log;
@@ -24,35 +24,57 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $cart = Cart::where('user_id', Auth::id())->first();
+        $data = $request->validate([
+            'coupon_code' => 'nullable|string',
+        ]);
 
-        if (!$cart || $cart->items->isEmpty()) {
+        // Retrieve the user's cart
+        $cart = Cart::where('user_id', Auth::id())->with('courses')->first();
+
+        if (!$cart || $cart->courses->isEmpty()) {
             return response()->json(['message' => 'Your cart is empty.'], 404);
         }
-        $total = $this->calculateTotalPrice($cart);
-        return $total;
 
-        // Create the order with user_id
+        $totalPrice = $cart->courses->sum('price');
+        $oldTotalPrice = $totalPrice;
+
+        // Check if a coupon is provided and apply it
+        if (!empty($data['coupon_code'])) {
+            // Find the coupon by the code
+            $coupon = Coupon::where('code', $data['coupon_code'])->first();
+
+            // Validate the coupon
+            if (!$coupon || !$coupon->isValid() || !$coupon->hasRemainingUsage()) {
+                return response()->json(['message' => 'Invalid or expired coupon'], 400);
+            }
+
+            if (!$cart->courses->first()->coupons->contains($coupon)) {
+                return response()->json(['message' => 'Coupon not applicable to these courses'], 400);
+            }
+
+            // Apply the discount to the total cart price
+            $totalPrice = $coupon->applyDiscount($totalPrice);
+
+            // Increment the coupon usage
+            $coupon->increment('usage_count');
+        }
+
+        // Create the order with the final total price after applying the coupon
         $order = Order::create([
             'cart_id' => $cart->id,
             'user_id' => Auth::id(),
-            'total_price' => $this->calculateTotalPrice($cart),
+            'total_price' => $totalPrice,
         ]);
 
-        // Attach items to the order
-        foreach ($cart->items as $cartItem) {
-            $orderItem = new OrderItem([
-                'item_id' => $cartItem->item_id,
-                'item_type' => $cartItem->item_type,
-                'order_id' => $order->id,
-            ]);
-            $order->items()->save($orderItem);
-        }
+        // Clear the cart (detach the courses)
+        $cart->courses()->detach();
 
-        // Clear the cart
-        $cart->items()->delete();
-
-        return response()->json(['message' => 'Order created successfully!', 'order' => $order], 201);
+        return response()->json([
+            'message' => 'Order created successfully!',
+            'order' => $order,
+            'discounted_total_price' => $totalPrice,
+            'original_total_price' => $oldTotalPrice,
+        ], 201);
     }
 
     private function calculateTotalPrice($cart)

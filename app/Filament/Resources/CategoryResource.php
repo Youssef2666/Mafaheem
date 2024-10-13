@@ -33,8 +33,8 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('name')->searchable()->sortable()->label('الاسم'),
+                Tables\Columns\TextColumn::make('description')->label('التفاصيل'),
             ])
             ->filters([
                 //

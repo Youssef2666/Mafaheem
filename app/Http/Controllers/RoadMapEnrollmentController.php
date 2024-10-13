@@ -44,12 +44,39 @@ class RoadMapEnrollmentController extends Controller
         $user = Auth::user();
 
         // Retrieve all the roadmaps the user is enrolled in
-        $enrollments = RoadMapEnrollment::with('roadMap')->where('user_id', $user->id)->get();
+        $enrollments = RoadMapEnrollment::with('roadMap.courses')
+            ->where('user_id', $user->id)
+            ->get();
 
-        // Return the enrollments with the roadmap details
+        // Transform the enrollments to the desired structure
+        $formattedEnrollments = $enrollments->map(function ($enrollment) {
+            return [
+                    'id' => $enrollment->roadMap->id,
+                    'title' => $enrollment->roadMap->title,
+                    'description' => $enrollment->roadMap->description,
+                    'courses' => $enrollment->roadMap->courses->map(function ($course) {
+                        return [
+                            'id' => $course->id,
+                            'title' => $course->title,
+                            'description' => $course->description,
+                            'subscription_plan_id' => $course->subscription_plan_id,
+                            'instructor_id' => $course->instructor_id,
+                            'image' => $course->image,
+                            'level' => $course->level,
+                            'price' => $course->price,
+                            'duration' => $course->duration,
+                            'what_you_will_learn' => $course->what_you_will_learn,
+                            'requirements' => $course->requirements,
+
+                        ];
+                    }),
+            ];
+        });
+
+        // Return the enrollments with the roadmap details in the desired format
         return response()->json([
             'message' => 'Enrollments retrieved successfully!',
-            'enrollments' => $enrollments,
+            'enrollments' => $formattedEnrollments,
         ], 200);
     }
 

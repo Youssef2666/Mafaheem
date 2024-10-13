@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CouponResource\Pages;
 use App\Filament\Resources\CouponResource\RelationManagers;
+use App\Filament\Resources\CouponResource\RelationManagers\CoursesRelationManager;
 use App\Models\Coupon;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -37,10 +38,11 @@ class CouponResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('code')->searchable()->sortable(),
-                TextColumn::make('discount_percentage')->searchable()->sortable(),
-                TextColumn::make('usage_limit')->searchable()->sortable(),
-                TextColumn::make('expires_at')->searchable()->sortable(),
+                TextColumn::make('code')->searchable()->sortable()->label('الكود'),
+                TextColumn::make('discount_percentage')->searchable()->sortable()->label('نسبة الخصم'),
+                TextColumn::make('usage_limit')->searchable()->sortable()->label('حد الاستخدام'),
+                TextColumn::make('usage_count')->searchable()->sortable()->label('عدد الاستخدام'),
+                TextColumn::make('expires_at')->searchable()->sortable()->label('تاريخ الانتهاء'),
             ])
             ->filters([
                 //
@@ -58,7 +60,7 @@ class CouponResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CoursesRelationManager::class,
         ];
     }
 

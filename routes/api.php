@@ -18,6 +18,7 @@ use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseProgressController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\RoadMapEnrollmentController;
+use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -99,4 +100,13 @@ Route::get('/courses/random/get', [CourseController::class, 'getRandomCourse']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/roadmapss/enroll', [RoadMapEnrollmentController::class, 'enrollInRoadMap']);
     Route::get('/roadmapss/enrollments', [RoadMapEnrollmentController::class, 'viewEnrollments']);
+    Route::post('/roadmaps/add/rate', [RoadMapController::class, 'rateRoadmap']);
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users/certificates', [UserController::class, 'getMyCertificates']);
+    Route::get('/users/roadmaps', [UserController::class, 'getMyRoadMaps']);
+    Route::post('/users/update', [UserController::class, 'updateUser']);
+    Route::get('/users/notifications', [UserController::class, 'getUserNotifications']);
 });

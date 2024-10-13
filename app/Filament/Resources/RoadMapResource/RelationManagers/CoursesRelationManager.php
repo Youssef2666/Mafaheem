@@ -29,16 +29,14 @@ class CoursesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('level')->sortable(),
+                Tables\Columns\TextColumn::make('title')->searchable()->sortable()->label('العنوان'),
+                Tables\Columns\TextColumn::make('level')->sortable()->label('المستوى'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->sendSuccessNotification()->after(function (Builder $query) {
-                    return $query->count();
-                }),
+                Tables\Actions\AttachAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
