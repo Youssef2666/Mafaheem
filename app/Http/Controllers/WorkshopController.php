@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Workshop;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
+use Illuminate\Support\Facades\Auth;
 
 class WorkshopController extends Controller
 {
@@ -61,6 +62,14 @@ class WorkshopController extends Controller
         return 'Do not use this method';
         $workshop = Workshop::find($id);
         $workshop->delete();
+        return $this->success($workshop);
+    }
+
+    public function subcribeInWorkshop($id)
+    {
+        $user = Auth::user();
+        $workshop = Workshop::find($id);
+        $user->workshops()->attach($workshop->id);
         return $this->success($workshop);
     }
 }

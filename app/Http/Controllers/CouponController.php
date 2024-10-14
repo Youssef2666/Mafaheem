@@ -112,4 +112,13 @@ class CouponController extends Controller
         ]);
     }
 
+
+    public function getCouponByCode(Request $request)
+    {
+        $coupon = Coupon::where('code', $request->coupon_code)->first();
+        if (!$coupon) {
+            return response()->json(['message' => 'Coupon not found'], 404);
+        }
+        return response()->json(['coupon' => $coupon]);
+    }
 }

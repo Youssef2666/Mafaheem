@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
@@ -17,8 +18,7 @@ class CartController extends Controller
         if (!$cart) {
             return response()->json(['message' => 'Your cart is empty.'], 404);
         }
-
-        return response()->json($cart);
+        return $this->success(new CartResource($cart));
     }
 
     /**

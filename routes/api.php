@@ -16,6 +16,7 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseProgressController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\RoadMapEnrollmentController;
 use App\Http\Controllers\UserController;
@@ -88,6 +89,7 @@ Route::get('/courses/{course}/get/reviews', [CourseController::class, 'getCourse
 //coupons
 Route::post('/coupons/try/assign', [CouponController::class, 'assignCouponToCourse'])->middleware('auth:sanctum');
 Route::post('/coupons/apply/coupon', [CouponController::class, 'applyCoupon'])->middleware('auth:sanctum');
+Route::get('/coupons/by/code', [CouponController::class, 'getCouponByCode'])->middleware('auth:sanctum');
 
 
 Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])
@@ -109,4 +111,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/roadmaps', [UserController::class, 'getMyRoadMaps']);
     Route::post('/users/update/profile', [UserController::class, 'updateUser']);
     Route::get('/users/notifications', [UserController::class, 'getUserNotifications']);
+    Route::post('/users/course/notification', [NotificationController::class, 'sendCourseNotification']);
 });

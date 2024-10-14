@@ -32,7 +32,7 @@ class Course extends Model
 
     public function enrollments()
     {
-        return $this->belongsToMany(Course::class, 'enrollments')->withPivot('enrolled_at', 'completed_at', 'price_at_purchase')->withTimestamps();
+        return $this->belongsToMany(User::class, 'enrollments')->withPivot('enrolled_at', 'completed_at', 'price_at_purchase')->withTimestamps();
     }
 
     public function ratings()

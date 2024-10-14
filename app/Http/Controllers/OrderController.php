@@ -41,6 +41,7 @@ class OrderController extends Controller
         // Check if a coupon is provided and apply it
         if (!empty($data['coupon_code'])) {
             // Find the coupon by the code
+            
             $coupon = Coupon::where('code', $data['coupon_code'])->first();
 
             // Validate the coupon
@@ -48,9 +49,9 @@ class OrderController extends Controller
                 return response()->json(['message' => 'Invalid or expired coupon'], 400);
             }
 
-            if (!$cart->courses->first()->coupons->contains($coupon)) {
-                return response()->json(['message' => 'Coupon not applicable to these courses'], 400);
-            }
+            // if (!$cart->courses->first()->coupons->contains($coupon)) {
+            //     return response()->json(['message' => 'Coupon not applicable to these courses'], 400);
+            // }
 
             // Apply the discount to the total cart price
             $totalPrice = $coupon->applyDiscount($totalPrice);
