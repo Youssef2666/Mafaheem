@@ -107,6 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/certificates', [UserController::class, 'getMyCertificates']);
     Route::get('/users/roadmaps', [UserController::class, 'getMyRoadMaps']);
-    Route::post('/users/update', [UserController::class, 'updateUser']);
+    Route::post('/users/update/profile', [UserController::class, 'updateUser']);
     Route::get('/users/notifications', [UserController::class, 'getUserNotifications']);
 });

@@ -10,10 +10,9 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\OtpVerifyRequest;
-use App\Notifications\EmailVerificationNotification;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -24,12 +23,12 @@ class AuthController extends Controller
     }
     public function register(RegisterRequest $request)
     {
-        try {   
+        try {
             // Create the user
             $user = User::create(
                 $request->validated(),
             );
-    
+
             // $user->notify(new EmailVerificationNotification($user->email, $this->otp));
             // Generate token
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -40,8 +39,14 @@ class AuthController extends Controller
         }
 
     }
-    public function whoAmI(){
+    public function whoAmI()
+    {
         $user = Auth::user();
+
+        if ($user->image) {
+            $user->image = asset('storage/' . $user->image);
+        }
+
         return $this->success($user);
     }
 
@@ -83,7 +88,6 @@ class AuthController extends Controller
         }
     }
 
-
     public function logout(Request $request)
     {
         try {
@@ -94,12 +98,14 @@ class AuthController extends Controller
         }
     }
 
-    public function getUsers(Request $request){
+    public function getUsers(Request $request)
+    {
         $users = User::all();
         return $this->success($users);
     }
 
-    public function resendEmailVerification(Request $request){
+    public function resendEmailVerification(Request $request)
+    {
         Auth::user()->sendEmailVerificationNotification();
         return $this->success('Email verification link sent.');
     }
@@ -110,7 +116,7 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
 
         // Check if the hash matches
-        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             return response()->json(['error' => 'Invalid verification link'], 403);
         }
 

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\Review;
-use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\CourseResource;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -16,19 +16,28 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $courses = Course::query()
-        ->when($request->search, function (Builder $builder) use ($request) {
-            $builder->where('title', 'like', "%{$request->search}%");
-        })
-        ->when($request->category_id, function (Builder $builder) use ($request) {
-            $builder->whereHas('categories', function (Builder $query) use ($request) {
-                $query->where('categories.id', $request->category_id);
-            });
-        })
-        ->when($request->subscription_plan_id, function (Builder $builder) use ($request) {
-            $builder->where('subscription_plan_id', $request->subscription_plan_id);
-        })
-        ->with(['lessons.lectures', 'subscriptionPlan','categories'])
-        ->get();
+            ->when($request->search, function (Builder $builder) use ($request) {
+                $builder->where('title', 'like', "%{$request->search}%");
+            })
+            ->when($request->category_id, function (Builder $builder) use ($request) {
+                $builder->whereHas('categories', function (Builder $query) use ($request) {
+                    $query->where('categories.id', $request->category_id);
+                });
+            })
+            ->when($request->subscription_plan_id, function (Builder $builder) use ($request) {
+                $builder->where('subscription_plan_id', $request->subscription_plan_id);
+            })
+            ->when($request->min_price && $request->max_price, function (Builder $builder) use ($request) {
+                $builder->whereBetween('price', [$request->min_price, $request->max_price]);
+            })
+            ->when($request->min_price && !$request->max_price, function (Builder $builder) use ($request) {
+                $builder->where('price', '>=', $request->min_price);
+            })
+            ->when(!$request->min_price && $request->max_price, function (Builder $builder) use ($request) {
+                $builder->where('price', '<=', $request->max_price);
+            })
+            ->with(['lessons.lectures', 'subscriptionPlan', 'categories'])
+            ->get();
         return $this->success([
             'total_courses' => $courses->count(),
             'courses' => CourseResource::collection($courses),
@@ -47,7 +56,7 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        $course = Course::with(['lessons.lectures', 'subscriptionPlan','categories'])->find($id);
+        $course = Course::with(['lessons.lectures', 'subscriptionPlan', 'categories'])->find($id);
         return $this->success(new CourseResource($course));
     }
 
@@ -164,7 +173,8 @@ class CourseController extends Controller
         return $this->success($reviews);
     }
 
-    public function getRandomCourse(Request $request){
+    public function getRandomCourse(Request $request)
+    {
         $randomCourse = Course::inRandomOrder()->take(7)->get();
         return $this->success($randomCourse);
     }

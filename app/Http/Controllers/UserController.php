@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Notifications\InvoicePaid;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,32 +26,42 @@ class UserController extends Controller
 
     public function updateUser(Request $request)
     {
-        // Validate the request data
+
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:8|confirmed', // password is optional, but if provided, it must be confirmed
-            'profile_photo_path' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png|max:100048',
         ]);
 
         $user = Auth::user();
 
+        // $user->image = "request->image";
+        // $user->save();
+
+        // Update password if provided
         if ($request->filled('password')) {
             $validatedData['password'] = Hash::make($request->password);
         }
 
-        if ($request->hasFile('profile_photo_path')) {
-            $path = $request->file('profile_photo_path')->store('profile-photos', 'public');
-            return $path;
-            $validatedData['profile_photo_path_path'] = $path;
+        // Check if a profile photo was uploaded
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('profile-photos-new', 'public');
+            $user->image = $path; // Update the validated data with the new path
+            $user->save();
+            $validatedData['profile_photo_path'] = $path; // Update the validated data with the new path
+            //   return[$validatedData['image'] ,$path];
+
         }
 
+
         // Update the user's data
-        $user->update($validatedData);
+        $user->update([$validatedData]);
 
         return $this->success($user);
     }
 
-    public function getUserNotifications(){
+    public function getUserNotifications()
+    {
         $user = Auth::user();
         return $user->unreadNotifications;
     }
