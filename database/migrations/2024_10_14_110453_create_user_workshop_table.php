@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Workshop::class);
-            $table->unique(['user_id', 'work_shop_id']);
+            $table->unique(['user_id', 'workshop_id']);
             $table->timestamps();
         });
     }

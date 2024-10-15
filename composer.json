@@ -7,14 +7,15 @@
     "require": {
         "php": "^8.2",
         "filament/filament": "3.2.57",
-        "filament/notifications": "3.2.57",   
+        "filament/notifications": "3.2.57",
         "ichtrojan/laravel-otp": "^2.0",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.2",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.0"
+        "livewire/livewire": "^3.0",
+        "plutu/plutu-laravel": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

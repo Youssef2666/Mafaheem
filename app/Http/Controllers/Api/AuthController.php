@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
-use Ichtrojan\Otp\Otp;
-use Illuminate\Http\Request;
-use App\Traits\ResponseTrait;
-use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\OtpVerifyRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
+use App\Traits\ResponseTrait;
+use Ichtrojan\Otp\Otp;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -54,14 +53,49 @@ class AuthController extends Controller
     {
         try {
             $request->validated($request->all());
-            if (!Auth::attempt($request->only('email', 'password'))) {
+
+            $user = null;
+
+            // Check if the user is logging in with Google
+            if ($request->filled('google_id')) {
+                // Use firstOrCreate to find or create the user by google_id
+                $user = User::firstOrCreate(
+                    ['google_id' => $request->google_id], // Check by google_id
+                    [
+                        'name' => $request->name, // Create new user with name
+                        'email' => $request->email, // and email if google_id doesn't exist
+                    ]
+                );
+            }
+
+            // Check if the user is logging in with Facebook
+            elseif ($request->filled('facebook_id')) {
+                // Use firstOrCreate to find or create the user by facebook_id
+                $user = User::firstOrCreate(
+                    ['facebook_id' => $request->facebook_id], // Check by facebook_id
+                    [
+                        'name' => $request->name, // Create new user with name
+                        'email' => $request->email, // and email if facebook_id doesn't exist
+                    ]
+                );
+            }
+
+            // If no social login is present, fall back to email/password login
+            elseif (!Auth::attempt($request->only('email', 'password'))) {
                 return $this->error('Credentials do not match', 401);
             }
-            $user = User::where('email', $request['email'])->firstOrFail();
+
+            // If user was found/created via Google/Facebook, proceed with token creation
+            if ($user === null) {
+                $user = User::where('email', $request->email)->firstOrFail();
+            }
+
+            // Create a new token for the user
             $token = $user->createToken('auth_token')->plainTextToken;
+
             return $this->successWithToken($user, token: $token);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

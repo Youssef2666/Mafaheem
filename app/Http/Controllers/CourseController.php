@@ -175,8 +175,11 @@ class CourseController extends Controller
 
     public function getRandomCourse(Request $request)
     {
-        $randomCourse = Course::inRandomOrder()->take(7)->get();
-        return $this->success($randomCourse);
+        $randomCourse = Course::with(['lessons.lectures', 'subscriptionPlan', 'categories'])->inRandomOrder()->take(7)->get();
+        return $this->success([
+            'total_courses' => $randomCourse->count(),
+            'courses' => CourseResource::collection($randomCourse),
+        ]);
     }
 
 }

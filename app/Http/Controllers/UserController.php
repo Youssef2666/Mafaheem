@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     use ResponseTrait;
+
+
+    public function getMyCourses()
+    {
+        $user = Auth::user();
+        $courses = $user->orders()->get();
+        return $this->success($courses);
+    }
+
     public function getMyCertificates()
     {
         $user = Auth::user();

@@ -4,22 +4,24 @@ use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SadadController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoadMapController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseProgressController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\RoadMapEnrollmentController;
-use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -112,4 +114,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/update/profile', [UserController::class, 'updateUser']);
     Route::get('/users/notifications', [UserController::class, 'getUserNotifications']);
     Route::post('/users/course/notification', [NotificationController::class, 'sendCourseNotification']);
+    Route::get('/users/courses/get', [UserController::class, 'getMyCourses']);
 });
+
+//adfali
+Route::post('adfali', [PaymentController::class, 'adfali']);
+Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
+
+
+//sadad
+Route::post('sadad', [SadadController::class, 'sadad']);
+Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);

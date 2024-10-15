@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Coupon;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     use ResponseTrait;
+
+
+
+
+
     public function index()
     {
         $orders = Auth::user()->orders;
@@ -66,6 +72,15 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'total_price' => $totalPrice,
         ]);
+
+        foreach ($cart->courses as $course) {
+            Enrollment::create([
+                'user_id' => Auth::id(),
+                'course_id' => $course->id,
+                'enrolled_at' => now(),
+                'price_at_purchase' => $course->price, // Set the price at the time of purchase
+            ]);
+        }
 
         // Clear the cart (detach the courses)
         $cart->courses()->detach();
