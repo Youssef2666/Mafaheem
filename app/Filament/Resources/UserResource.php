@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\EnrollmentsRelationManager;
 use App\Filament\Resources\UserResourseResource\RelationManagers\OrdersRelationManager;
 use App\Models\User;
 use Filament\Forms;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+    protected static ?string $modelLabel = 'مستخدم';
+    protected static ?string $pluralModelLabel = 'المستخدمين';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -52,7 +55,8 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            OrdersRelationManager::class
+            OrdersRelationManager::class,
+            EnrollmentsRelationManager::class,
         ];
     }
 

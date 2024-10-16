@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class CouponResource extends Resource
 {
     protected static ?string $model = Coupon::class;
+    protected static ?string $modelLabel = 'كوبون';
+    protected static ?string $pluralModelLabel = 'كوبونات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

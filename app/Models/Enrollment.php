@@ -16,4 +16,9 @@ class Enrollment extends Model
         'completed_at',
         'price_at_purchase',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

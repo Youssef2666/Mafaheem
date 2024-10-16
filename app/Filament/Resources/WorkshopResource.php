@@ -17,6 +17,8 @@ use Filament\Tables\Table;
 class WorkshopResource extends Resource
 {
     protected static ?string $model = Workshop::class;
+    protected static ?string $modelLabel = 'ورشة عمل';
+    protected static ?string $pluralModelLabel = 'ورش العمل';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

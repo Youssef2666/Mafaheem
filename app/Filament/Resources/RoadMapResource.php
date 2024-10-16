@@ -21,6 +21,8 @@ use Filament\Forms\Components\Section;
 class RoadMapResource extends Resource
 {
     protected static ?string $model = RoadMap::class;
+    protected static ?string $modelLabel = 'خريطة سير';
+    protected static ?string $pluralModelLabel = 'خرائط السير';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

@@ -19,6 +19,8 @@ use Filament\Tables\Table;
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
+    protected static ?string $modelLabel = 'الدورة';
+    protected static ?string $pluralModelLabel = 'الدورات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

@@ -17,6 +17,8 @@ use App\Filament\Resources\OrderResource\RelationManagers\CoursesRelationManager
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
+    protected static ?string $modelLabel = 'طلب';
+    protected static ?string $pluralModelLabel = 'الطلبات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -34,7 +36,7 @@ class OrderResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->searchable()->sortable()->label('المعرف'),
                 Tables\Columns\TextColumn::make('user.name')->searchable()->sortable()->label('اسم المستخدم'),
-                Tables\Columns\TextColumn::make('total_price')->searchable()->sortable()->label('السعر الكلي'),
+                Tables\Columns\TextColumn::make('total_price')->searchable()->sortable()->label('السعر الكلي')->badge('ر.س', 'success'),
             ])
             ->filters([
                 //
