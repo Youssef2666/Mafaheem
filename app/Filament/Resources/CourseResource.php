@@ -5,9 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers\CategoriesRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\CouponsRelationManager;
-use App\Filament\Resources\CourseResource\RelationManagers\OrderItemsRelationManager;
+use App\Filament\Resources\CourseResource\RelationManagers\LessonsRelationManager;
 use App\Filament\Resources\CourseResource\RelationManagers\RatingsRelationManager;
 use App\Models\Course;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,7 +30,39 @@ class CourseResource extends Resource
         return $form
             ->schema([
                 TextInput::make('title')
+                    ->label('الاسم')
                     ->required(),
+                Select::make('level')
+                    ->label('المستوى')
+                    ->options([
+                        'مبتدئ' => 'مبتدئ',
+                        'متوسط' => 'متوسط',
+                        'متقدم' => 'متقدم',
+                    ]),
+
+                TextInput::make('price')
+                    ->label('السعر')
+                    ->required(),
+
+                TextInput::make('description')
+                    ->label('الوصف'),
+
+                TextInput::make('duration')
+                    ->numeric()
+                    ->required()
+                    ->label('المدة'),
+
+                Select::make('instructor_id')
+                    ->label('اسم المدرب')
+                    ->searchable()
+                    ->required()
+                    ->relationship('instructor', 'name'),
+
+                Select::make('subscription_plan_id')
+                    ->label('الخطة الاشتراكية')
+                    ->required()
+                    ->relationship('subscriptionPlan', 'name'),
+
             ]);
     }
 
@@ -48,7 +81,7 @@ class CourseResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('level')
-                ->label('المستوى')
+                    ->label('المستوى')
                     ->options([
                         'مبتدئ' => 'مبتدئ',
                         'متوسط' => 'متوسط',
@@ -68,6 +101,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
+            LessonsRelationManager::class,
             // OrderItemsRelationManager::class,
             CategoriesRelationManager::class,
             RatingsRelationManager::class,

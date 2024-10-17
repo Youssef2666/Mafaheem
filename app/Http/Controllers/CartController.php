@@ -16,7 +16,7 @@ class CartController extends Controller
         $cart = Cart::where('user_id', Auth::id())->with('courses')->first();
 
         if (!$cart) {
-            return response()->json(['message' => 'Your cart is empty.'], 404);
+            return $this->success(null);
         }
         return $this->success(new CartResource($cart));
     }

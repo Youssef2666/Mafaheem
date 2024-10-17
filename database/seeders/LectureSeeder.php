@@ -42,5 +42,9 @@ class LectureSeeder extends Seeder
                 'title' => 'Create First Route',
             ],
         ];
+
+        foreach ($lectures as $lecture) {
+            \App\Models\Lecture::create($lecture);
+        }
     }
 }

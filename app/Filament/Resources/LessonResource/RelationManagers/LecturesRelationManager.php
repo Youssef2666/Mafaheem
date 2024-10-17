@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\CourseResource\RelationManagers;
+namespace App\Filament\Resources\LessonResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -10,41 +10,36 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class RatingsRelationManager extends RelationManager
+class LecturesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'ratings';
+    protected static string $relationship = 'lectures';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                // Forms\Components\TextInput::make('name')
-                //     ->required()
-                //     ->maxLength(255),
-                
-                Forms\Components\TextInput::make('rating')
+                Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(1),
+                    ->maxLength(255),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('rating'),
+                Tables\Columns\TextColumn::make('title'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

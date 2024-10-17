@@ -29,5 +29,9 @@ class LessonSeeder extends Seeder
                 'content' => 'Flutter 3: The Flutter Framework',
             ],
         ];
+
+        foreach ($lessons as $lesson) {
+            \App\Models\Lesson::create($lesson);
+        }
     }
 }
