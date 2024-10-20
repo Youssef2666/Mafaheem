@@ -12,7 +12,7 @@ class WorkshopController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $workshops = Workshop::all();
+        $workshops = Workshop::with('categories')->get();
         return $this->success($workshops);
     }
 
