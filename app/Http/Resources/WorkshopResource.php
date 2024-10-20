@@ -14,6 +14,23 @@ class WorkshopResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'instructor_id' => $this->instructor_id,
+            'instructor_name' => $this->instructor->name,
+            'capacity' => $this->capacity,
+            'date' => $this->date,
+            'time' => $this->time,
+            'price' => $this->price,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'image' => $this->image,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'number_of_users' => $this->users->count(),
+            'seats_left' => $this->seatsLeft()
+        ];
     }
 }

@@ -6,23 +6,16 @@ use App\Models\Workshop;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\WorkshopResource;
 
 class WorkshopController extends Controller
 {
     use ResponseTrait;
     public function index()
-    {
-        $workshops = Workshop::with('instructor','categories')->get()->map(function ($workshop) {
-            return [
-                'id' => $workshop->id,
-                'title' => $workshop->title,
-                'capacity' => $workshop->capacity,
-                'enrolled_users' => $workshop->users->count(),
-                'seats_left' => $workshop->seatsLeft(), // Get seats left
-            ];
-        });
-        return $this->success($workshops);
-    }
+{
+    $workshops = Workshop::with(['instructor', 'categories', 'users'])->get();
+    return $this->success(WorkshopResource::collection($workshops));
+}
 
     /**
      * Store a newly created resource in storage.
@@ -48,7 +41,7 @@ class WorkshopController extends Controller
     public function show(string $id)
     {
         $workshop = Workshop::with('instructor','categories')->find($id);
-        return $this->success($workshop);
+        return $this->success(new WorkshopResource($workshop));
     }
 
     /**
