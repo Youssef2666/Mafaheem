@@ -22,6 +22,15 @@ class Workshop extends Model
         'image'
     ];
 
+
+    public function seatsLeft()
+    {
+        $enrolledUsersCount = $this->users()->count();
+        return $this->capacity - $enrolledUsersCount;
+    }
+
+
+
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');

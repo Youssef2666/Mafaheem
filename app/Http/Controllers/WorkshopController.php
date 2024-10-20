@@ -12,7 +12,15 @@ class WorkshopController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $workshops = Workshop::with('categories')->get();
+        $workshops = Workshop::with('instructor','categories')->get()->map(function ($workshop) {
+            return [
+                'id' => $workshop->id,
+                'title' => $workshop->title,
+                'capacity' => $workshop->capacity,
+                'enrolled_users' => $workshop->users->count(),
+                'seats_left' => $workshop->seatsLeft(), // Get seats left
+            ];
+        });
         return $this->success($workshops);
     }
 
@@ -39,7 +47,7 @@ class WorkshopController extends Controller
      */
     public function show(string $id)
     {
-        $workshop = Workshop::with('categories')->find($id);
+        $workshop = Workshop::with('instructor','categories')->find($id);
         return $this->success($workshop);
     }
 
@@ -79,16 +87,19 @@ class WorkshopController extends Controller
         // Get the workshop
         $workshop = Workshop::findOrFail($workshopId);
         
-        // Count how many users are already registered
         $registeredUsers = $workshop->users()->count();
 
         // Check if the capacity is full
         if ($registeredUsers >= $workshop->capacity) {
-            return response()->json(['message' => 'معذرة، لا يمكنك التسجيل'], 400);
+            return $this->error('عذرًا، الورشة ممتلئة ولا يمكنك التسجيل', 400);
         }
 
-        // Register the user for the workshop
         $user = Auth::user(); 
+
+        if ($workshop->users()->where('user_id', $user->id)->exists()) {
+            return $this->error('لقد قمت بالتسجيل في هذه الورشة بالفعل', 400);
+        }
+
         $workshop->users()->attach($user->id);
 
         return response()->json(['message' => 'لقد تم تسجيلك بنجاح'], 200);
