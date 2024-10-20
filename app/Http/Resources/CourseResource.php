@@ -31,6 +31,7 @@ class CourseResource extends JsonResource
             'category' => CategoryResource::collection($this->whenLoaded('categories')),
             'subscriptionPlan' => $this->whenLoaded('subscriptionPlan'),
             'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
+            'reviews' => $this->whenLoaded('reviews'),
         ];
     }
 }

@@ -36,7 +36,7 @@ class CourseController extends Controller
             ->when(!$request->min_price && $request->max_price, function (Builder $builder) use ($request) {
                 $builder->where('price', '<=', $request->max_price);
             })
-            ->with(['lessons.lectures', 'subscriptionPlan', 'categories'])
+            ->with(['lessons.lectures', 'subscriptionPlan', 'categories', 'reviews'])
             ->get();
         return $this->success([
             'total_courses' => $courses->count(),
@@ -56,7 +56,7 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        $course = Course::with(['lessons.lectures', 'subscriptionPlan', 'categories'])->find($id);
+        $course = Course::with(['lessons.lectures', 'subscriptionPlan', 'categories', 'reviews'])->find($id);
         return $this->success(new CourseResource($course));
     }
 
