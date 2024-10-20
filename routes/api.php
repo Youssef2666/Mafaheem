@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::get('/me', [AuthController::class, 'whoAmI'])->middleware('auth:sanctum');
+Route::get('/me2', [AuthController::class, 'whoAmI2'])->middleware('auth:sanctum');
 
 
 

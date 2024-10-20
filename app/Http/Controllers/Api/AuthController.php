@@ -46,9 +46,19 @@ class AuthController extends Controller
             $user->image = asset('storage/' . $user->image);
         }
 
+        return $this->success($user);
+    }
+    public function whoAmI2()
+    {
+        $user = Auth::user();
+
+        if ($user->image) {
+            $user->image = asset('storage/' . $user->image);
+        }
+
         return $this->success([
             'user' => $user,
-            'instructor' => $user->instructor
+            'instructor' => $user->instructor,
         ]);
     }
 
