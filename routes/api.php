@@ -125,3 +125,7 @@ Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
 //sadad
 Route::post('sadad', [SadadController::class, 'sadad']);
 Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
+
+Route::post('workshops/{id}/register', [WorkshopController::class, 'registerForWorkshop'])->middleware('auth:sanctum');
+Route::get('user/workshops', [WorkshopController::class, 'getUserWorkshops'])->middleware('auth:sanctum');
+Route::get('workshops/{id}/users', [WorkshopController::class, 'getWorkshopUsers'])->middleware('auth:sanctum');

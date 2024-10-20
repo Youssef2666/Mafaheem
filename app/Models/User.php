@@ -121,4 +121,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function orders(){
         return $this->hasMany(Order::class);
     }
+
+    public function workshops(){
+        return $this->belongsToMany(Workshop::class, 'user_workshop')->withTimestamps();
+    }
 }

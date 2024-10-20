@@ -65,11 +65,41 @@ class WorkshopController extends Controller
         return $this->success($workshop);
     }
 
-    public function subcribeInWorkshop($id)
+    public function getUserWorkshops(Request $request)
     {
         $user = Auth::user();
-        $workshop = Workshop::find($id);
-        $user->workshops()->attach($workshop->id);
-        return $this->success($workshop);
+
+        $workshops = $user->workshops()->get();
+
+        return response()->json($workshops);
+    }
+
+    public function registerForWorkshop(Request $request, $workshopId)
+    {
+        // Get the workshop
+        $workshop = Workshop::findOrFail($workshopId);
+        
+        // Count how many users are already registered
+        $registeredUsers = $workshop->users()->count();
+
+        // Check if the capacity is full
+        if ($registeredUsers >= $workshop->capacity) {
+            return response()->json(['message' => 'معذرة، لا يمكنك التسجيل'], 400);
+        }
+
+        // Register the user for the workshop
+        $user = Auth::user(); 
+        $workshop->users()->attach($user->id);
+
+        return response()->json(['message' => 'لقد تم تسجيلك بنجاح'], 200);
+    }
+
+    public function getWorkshopUsers($workshopId)
+    {
+        $workshop = Workshop::findOrFail($workshopId);
+
+        $users = $workshop->users()->get();
+
+        return response()->json($users);
     }
 }

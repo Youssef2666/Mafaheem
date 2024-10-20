@@ -36,4 +36,8 @@ class Workshop extends Model
         return $this->morphMany(OrderItem::class, 'item');
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_workshop')->withTimestamps();
+    }
 }
