@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseProgressController;
+use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\SubscriptionPlanController;
 use App\Http\Controllers\RoadMapEnrollmentController;
 
@@ -56,6 +57,7 @@ Route::apiResource('/coupons', CouponController::class);
 Route::apiResource('/roadmaps', RoadMapController::class);
 Route::apiResource('/carts', CartController::class)->middleware('auth:sanctum');
 Route::apiResource('/orders', OrderController::class)->middleware('auth:sanctum');
+Route::apiResource('/instructors', InstructorController::class)->middleware('auth:sanctum');
 
 // Route to mark a lecture as completed
 Route::post('/courses/{courseId}/lessons/{lessonId}/lectures/{lectureId}/complete', [CourseProgressController::class, 'completeLecture'])->middleware('auth:sanctum');

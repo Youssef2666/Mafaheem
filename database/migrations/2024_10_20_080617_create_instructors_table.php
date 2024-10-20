@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -8,17 +7,15 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('instructors', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Cart::class);
-            $table->string('payment_method')->nullable();
-            $table->decimal('total_price', 8, 2);
+            $table->string('phone');
+            $table->text('image')->nullable();
+            $table->text('bio')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('instructors');
     }
 };

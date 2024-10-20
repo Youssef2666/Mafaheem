@@ -40,4 +40,8 @@ class Workshop extends Model
     {
         return $this->belongsToMany(User::class, 'user_workshop')->withTimestamps();
     }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class, 'category_workshop')->withTimestamps();
+    }
 }

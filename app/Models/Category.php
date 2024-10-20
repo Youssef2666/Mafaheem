@@ -19,4 +19,9 @@ class Category extends Model
         return $this->belongsToMany(Course::class, 'category_course');
     }
 
+    public function workshops()
+    {
+        return $this->belongsToMany(Workshop::class, 'category_workshop')->withTimestamps();
+    }
+
 }

@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\WorkshopResource\Pages;
-use App\Models\Workshop;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Workshop;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
+use App\Filament\Resources\WorkshopResource\Pages;
+use App\Filament\Resources\WorkshopResource\RelationManagers\CategoriesRelationManager;
 
 class WorkshopResource extends Resource
 {
@@ -36,8 +37,8 @@ class WorkshopResource extends Resource
                     ->relationship('instructor', 'name')
                     ->required(),
                 Section::make('location')->schema([
-                    TextInput::make('latitude')->numeric()->required(),
-                    TextInput::make('longitude')->numeric()->required(),
+                    TextInput::make('latitude')->numeric(),
+                    TextInput::make('longitude')->numeric(),
                 ]),
             ]);
     }
@@ -70,7 +71,7 @@ class WorkshopResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CategoriesRelationManager::class,
         ];
     }
 

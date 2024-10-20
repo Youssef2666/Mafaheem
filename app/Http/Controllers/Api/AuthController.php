@@ -46,7 +46,10 @@ class AuthController extends Controller
             $user->image = asset('storage/' . $user->image);
         }
 
-        return $this->success($user);
+        return $this->success([
+            'user' => $user,
+            'instructor' => $user->instructor
+        ]);
     }
 
     public function login(LoginRequest $request)

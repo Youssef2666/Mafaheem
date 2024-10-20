@@ -71,6 +71,7 @@ class OrderController extends Controller
             'cart_id' => $cart->id,
             'user_id' => Auth::id(),
             'total_price' => $totalPrice,
+            'payment_method' => $request->payment_method,
         ]);
 
         foreach ($cart->courses as $course) {
