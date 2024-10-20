@@ -11,6 +11,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
 use App\Filament\Resources\WorkshopResource\Pages;
 use App\Filament\Resources\WorkshopResource\RelationManagers\CategoriesRelationManager;
@@ -36,10 +37,13 @@ class WorkshopResource extends Resource
                 Select::make('instructor_id')
                     ->relationship('instructor', 'name')
                     ->required(),
+                
                 Section::make('location')->schema([
                     TextInput::make('latitude')->numeric(),
                     TextInput::make('longitude')->numeric(),
                 ]),
+                FileUpload::make('image')
+                ->image()
             ]);
     }
 

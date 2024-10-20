@@ -18,7 +18,8 @@ class Workshop extends Model
         'price',
         'instructor_id',
         'latitude',
-        'longitude'
+        'longitude',
+        'image'
     ];
 
     public function instructor()

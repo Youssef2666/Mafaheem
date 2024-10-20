@@ -22,6 +22,7 @@ class WorkshopSeeder extends Seeder
                 'time' => '09:00:00',
                 'capacity' => 10,
                 'price' => 20,
+                'image' => 'https://i.ytimg.com/vi/F86-AnpQmqM/maxresdefault.jpg',
             ],
             [
                 'instructor_id' => 1,
@@ -33,6 +34,7 @@ class WorkshopSeeder extends Seeder
                 'time' => '10:00:00',
                 'capacity' => 10,
                 'price' => 20,
+                'image' => 'https://i.ytimg.com/vi/F86-AnpQmqM/maxresdefault.jpg',
             ],
             [
                 'instructor_id' => 1,
@@ -44,7 +46,20 @@ class WorkshopSeeder extends Seeder
                 'time' => '11:00:00',
                 'capacity' => 10,
                 'price' => 20,
+                'image' => 'https://th.bing.com/th/id/OIP.KdxBLLxeLChvfqdgr3BZBgHaCv?rs=1&pid=ImgDetMain',
             ],
+            [
+                'instructor_id' => 3,
+                'title' => 'Vue 3: The Vue Framework',
+                'description' => 'Vue 3: The Vue Framework',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'date' => '2024-10-15',
+                'time' => '12:00:00',
+                'capacity' => 10,
+                'price' => 20,
+                'image' => 'https://th.bing.com/th/id/OIP.S7xVT6xndxJj4PvzXhGvfwHaDv?rs=1&pid=ImgDetMain',
+            ]
         ];
         foreach ($workshops as $workshop) {
             \App\Models\Workshop::create($workshop);
