@@ -2,41 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
-use App\Models\Instructor;
 use App\Models\User;
-use App\Traits\ResponseTrait;
+use App\Models\Instructor;
 use Illuminate\Http\Request;
+use App\Traits\ResponseTrait;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\CourseResource;
 
 class InstructorController extends Controller
 {
     use ResponseTrait;
-    public function index()
-    {
-        $instructors = User::withCount('courses')
-            ->with(['instructor', 'courses.enrollments']) // Eager load enrollments
-            ->get()
-            ->map(function ($instructor) {
-                $totalStudents = $instructor->courses->sum(function ($course) {
-                    return $course->enrollments->count();
-                });
-    
+   public function index()
+{
+    $instructors = User::withCount('courses')
+        ->with(['instructor', 'courses.enrollments']) // Load courses with enrollments
+        ->get()
+        ->map(function ($instructor) {
+            // Calculate the total number of students for this instructor
+            $totalStudents = $instructor->courses->sum(function ($course) {
+                return $course->enrollments->count();
+            });
+
+            // Manually structure the course data
+            $courses = $instructor->courses->map(function ($course) {
                 return [
-                    'id' => $instructor->id,
-                    'name' => $instructor->name,
-                    'email' => $instructor->email,
-                    'email_verified_at' => $instructor->email_verified_at,
-                    'profile_photo_url' => $instructor->profile_photo_url,
-                    'image' => $instructor->image,
-                    'courses_count' => $instructor->courses_count,
-                    'instructor' => $instructor->instructor,
-                    'number_of_students' => $totalStudents,
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'description' => $course->description,
+                    'image' => $course->image,
+                    'price' => $course->price,
+                    'level' => $course->level,
+                    'duration' => $course->duration,
+                    'number_of_students' => $course->enrollments->count() // Return only the count of enrollments
                 ];
             });
-    
-        return $this->success($instructors);
-    }
+
+            // Return the structured instructor data
+            return [
+                'id' => $instructor->id,
+                'name' => $instructor->name,
+                'email' => $instructor->email,
+                'email_verified_at' => $instructor->email_verified_at,
+                'profile_photo_url' => $instructor->profile_photo_url,
+                'image' => $instructor->image,
+                'courses_count' => $instructor->courses_count,
+                'instructor' => $instructor->instructor,
+                'number_of_students' => $totalStudents,
+                'courses' => $courses, // Return the manually structured course data
+            ];
+        });
+
+    return $this->success($instructors);
+}
+
     
 
     public function store(Request $request)

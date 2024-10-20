@@ -39,7 +39,7 @@ class WorkshopController extends Controller
      */
     public function show(string $id)
     {
-        $workshop = Workshop::find($id);
+        $workshop = Workshop::with('categories')->find($id);
         return $this->success($workshop);
     }
 
