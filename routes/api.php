@@ -45,6 +45,11 @@ Route::get('/me', [AuthController::class, 'whoAmI'])->middleware('auth:sanctum')
 Route::get('/me2', [AuthController::class, 'whoAmI2'])->middleware('auth:sanctum');
 
 
+//most ordered courses
+Route::get('courses/most-ordered', [CourseController::class, 'getMostOrderedCourses']);
+
+
+
 
 //resources
 Route::apiResource('/course-categories', CourseCategoryController::class);
@@ -129,6 +134,7 @@ Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
 Route::post('sadad', [SadadController::class, 'sadad']);
 Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
 
+//workshop
 Route::post('workshops/{id}/register', [WorkshopController::class, 'registerForWorkshop'])->middleware('auth:sanctum');
 Route::get('user/workshops', [WorkshopController::class, 'getUserWorkshops'])->middleware('auth:sanctum');
 Route::get('workshops/{id}/users', [WorkshopController::class, 'getWorkshopUsers'])->middleware('auth:sanctum');

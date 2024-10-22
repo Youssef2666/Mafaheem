@@ -36,6 +36,10 @@ class CourseController extends Controller
             ->when(!$request->min_price && $request->max_price, function (Builder $builder) use ($request) {
                 $builder->where('price', '<=', $request->max_price);
             })
+            ->when($request->most_enrolled, function (Builder $builder) {
+                $builder->withCount('enrollments')
+                    ->orderBy('enrollments_count', 'desc');
+            })
             ->with(['lessons.lectures', 'subscriptionPlan', 'categories', 'reviews'])
             ->get();
         return $this->success([
@@ -179,6 +183,20 @@ class CourseController extends Controller
         return $this->success([
             'total_courses' => $randomCourse->count(),
             'courses' => CourseResource::collection($randomCourse),
+        ]);
+    }
+
+    public function getMostOrderedCourses()
+    {
+        $courses = Course::query()
+            ->withCount('enrollments')
+            ->orderBy('enrollments_count', 'desc') 
+            ->with(['lessons.lectures', 'subscriptionPlan', 'categories', 'reviews']) 
+            ->get();
+
+        return $this->success([
+            'total_courses' => $courses->count(),
+            'courses' => CourseResource::collection($courses),
         ]);
     }
 
