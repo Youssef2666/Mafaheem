@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,7 @@ class UserController extends Controller
     public function updateUser(Request $request)
     {
 
+        // return $request->all();
         $validatedData = $request->validate([
             'name' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:8|confirmed', // password is optional, but if provided, it must be confirmed
@@ -56,16 +58,17 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('profile-photos-new', 'public');
             $user->image = $path; // Update the validated data with the new path
-            $user->save();
             $validatedData['profile_photo_path'] = $path; // Update the validated data with the new path
             //   return[$validatedData['image'] ,$path];
-
+            
         }
-
-
+        
+        // return $validatedData;
+        
+        
         // Update the user's data
-        $user->update([$validatedData]);
-
+        $user->update($validatedData);
+        $user->save();
         return $this->success($user);
     }
 
