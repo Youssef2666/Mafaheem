@@ -15,13 +15,23 @@ class LessonSeeder extends Seeder
         $lessons = [
             [
                 'course_id' => 1,
-                'title' => 'Introduction to Laravel 9: The Laravel Framework',
-                'content' => 'Laravel 9: The Laravel Framework',
+                'title' => 'Introduction to Html',
+                'content' => 'Html Introduction',
             ],
             [
                 'course_id' => 1,
-                'title' => 'basic Laravel 10: The Laravel Framework',
-                'content' => 'Laravel 10: The Laravel Framework',
+                'title' => 'introduction to CSS',
+                'content' => 'Css Introduction',
+            ],
+            [
+                'course_id' => 1,
+                'title' => 'introduction to JavaScript',
+                'content' => 'JavaScript Introduction',
+            ],
+            [
+                'course_id' => 1,
+                'title' => 'introduction to Laravel 11',
+                'content' => 'Laravel 11 Introduction',
             ],
             [
                 'course_id' => 2,

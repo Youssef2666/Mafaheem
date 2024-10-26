@@ -9,13 +9,19 @@ use App\Traits\ResponseTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+
 
 class CourseController extends Controller
 {
     use ResponseTrait;
-    public function index(Request $request)
-    {
-        $courses = Course::query()
+    
+public function index(Request $request)
+{
+    $cacheKey = 'courses_' . md5(serialize($request->all()));
+
+    $courses = Cache::remember($cacheKey, 60 * 60, function () use ($request) {
+        return Course::query()
             ->when($request->search, function (Builder $builder) use ($request) {
                 $builder->where('title', 'like', "%{$request->search}%");
             })
@@ -42,12 +48,13 @@ class CourseController extends Controller
             })
             ->with(['lessons.lectures', 'subscriptionPlan', 'categories', 'reviews'])
             ->get();
-        return $this->success([
-            'total_courses' => $courses->count(),
-            'courses' => CourseResource::collection($courses),
-        ]);
-    }
+    });
 
+    return $this->success([
+        'total_courses' => $courses->count(),
+        'courses' => CourseResource::collection($courses),
+    ]);
+}
     public function store(Request $request)
     {
         $data = $request->all();

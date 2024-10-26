@@ -58,6 +58,7 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('profile-photos-new', 'public');
             $user->image = $path; // Update the validated data with the new path
+            $user->save();
             $validatedData['profile_photo_path'] = $path; // Update the validated data with the new path
             //   return[$validatedData['image'] ,$path];
             
