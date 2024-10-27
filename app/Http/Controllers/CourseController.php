@@ -108,18 +108,15 @@ public function index(Request $request)
             return $this->error('You have already rated this course', 400);
         }
 
-        // Attach the rating if it doesn't exist
         $course->ratings()->attach(Auth::id(), ['rating' => $data['rating']]);
         return $this->success($course, 'Course rated successfully');
     }
 
     public function issueCertificate(Request $request, Course $course)
     {
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user();
 
-        // Check if the user is already enrolled in the course
         if (!$user->certificates()->where('course_id', $course->id)->exists()) {
-            // Attach the course to the user's certificates
             $user->certificates()->attach($course->id, ['issued_at' => now()]);
 
             return response()->json(['message' => 'Certificate issued successfully.'], 200);

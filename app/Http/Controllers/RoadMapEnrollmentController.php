@@ -40,7 +40,6 @@ class RoadMapEnrollmentController extends Controller
 
     public function viewEnrollments()
     {
-        // Get the currently authenticated user
         $user = Auth::user();
 
         // Retrieve all the roadmaps the user is enrolled in
@@ -73,7 +72,6 @@ class RoadMapEnrollmentController extends Controller
             ];
         });
 
-        // Return the enrollments with the roadmap details in the desired format
         return response()->json([
             'message' => 'Enrollments retrieved successfully!',
             'enrollments' => $formattedEnrollments,

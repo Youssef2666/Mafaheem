@@ -34,7 +34,6 @@ class PaymentController extends Controller
                 'amount' => $amount
             ]);
 
-        // Handle exceptions that may be thrown during the execution of the code
         } catch (\Exception $e) {
             $exception = $e->getMessage();
         }

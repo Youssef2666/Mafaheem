@@ -75,25 +75,20 @@ class CartController extends Controller
 
     public function removeFromCart(Request $request)
     {
-        // Validate the request to ensure course_id is provided and exists
         $request->validate([
             'course_id' => 'required|exists:courses,id',
         ]);
 
-        // Find the cart for the authenticated user
         $cart = Cart::where('user_id', Auth::id())->first();
 
-        // Check if the cart exists
         if (!$cart) {
             return response()->json(['message' => 'Your cart is empty.'], 404);
         }
 
-        // Check if the course exists in the cart
         if (!$cart->courses()->where('course_id', $request->course_id)->exists()) {
             return response()->json(['message' => 'Course not found in your cart.'], 404);
         }
 
-        // Detach the course from the cart
         $cart->courses()->detach($request->course_id);
 
         return response()->json(['message' => 'Course removed from cart successfully!'], 200);

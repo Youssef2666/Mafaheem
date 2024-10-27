@@ -44,29 +44,18 @@ class OrderController extends Controller
         $totalPrice = $cart->courses->sum('price');
         $oldTotalPrice = $totalPrice;
 
-        // Check if a coupon is provided and apply it
         if (!empty($data['coupon_code'])) {
-            // Find the coupon by the code
             
             $coupon = Coupon::where('code', $data['coupon_code'])->first();
 
-            // Validate the coupon
             if (!$coupon || !$coupon->isValid() || !$coupon->hasRemainingUsage()) {
                 return response()->json(['message' => 'Invalid or expired coupon'], 400);
             }
-
-            // if (!$cart->courses->first()->coupons->contains($coupon)) {
-            //     return response()->json(['message' => 'Coupon not applicable to these courses'], 400);
-            // }
-
-            // Apply the discount to the total cart price
             $totalPrice = $coupon->applyDiscount($totalPrice);
 
-            // Increment the coupon usage
             $coupon->increment('usage_count');
         }
 
-        // Create the order with the final total price after applying the coupon
         $order = Order::create([
             'cart_id' => $cart->id,
             'user_id' => Auth::id(),
@@ -101,7 +90,6 @@ class OrderController extends Controller
         foreach ($cart->items as $cartItem) {
             $item = $cartItem->item; // This retrieves the polymorphic item
 
-            // Log the item details for debugging
             Log::info("CartItem ID: " . $cartItem->id . ", Item: ", [
                 'item_id' => $cartItem->item_id,
                 'item_type' => $cartItem->item_type,
@@ -109,7 +97,7 @@ class OrderController extends Controller
             ]);
 
             if ($item && isset($item->price)) {
-                $totalPrice += $item->price; // Ensure the item has a price attribute
+                $totalPrice += $item->price;
             } else {
                 // Log if the item or price is missing
                 Log::warning("Price not found for item ID: " . $cartItem->item_id . ", Type: " . $cartItem->item_type);

@@ -87,15 +87,12 @@ class RoadMapController extends Controller
         // Find the roadmap
         $roadmap = Roadmap::findOrFail($roadmapId);
 
-        // Check if the course is associated with the roadmap
         if (!$roadmap->courses()->where('courses.id', $request->course_id)->exists()) {
             return $this->error('Course not found in roadmap', 404);
         }
 
-        // Detach the course from the roadmap
         $roadmap->courses()->detach($request->course_id);
 
-        // Return a JSON response
         return $this->success(message: 'Course removed from roadmap successfully!', status: 200);
     }
 
@@ -107,10 +104,8 @@ class RoadMapController extends Controller
             'course_ids.*' => 'exists:courses,id', // Ensure each ID exists in the courses table
         ]);
 
-        // Find the roadmap by ID
         $roadmap = RoadMap::findOrFail($roadmapId);
 
-        // Attach the new courses to the roadmap
         $roadmap->courses()->attach($request->course_ids);
 
         // Return a JSON response

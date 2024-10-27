@@ -45,10 +45,6 @@ class UserController extends Controller
         ]);
 
         $user = Auth::user();
-
-        // $user->image = "request->image";
-        // $user->save();
-
         // Update password if provided
         if ($request->filled('password')) {
             $validatedData['password'] = Hash::make($request->password);

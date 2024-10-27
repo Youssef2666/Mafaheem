@@ -16,15 +16,13 @@ class InstructorController extends Controller
    public function index()
 {
     $instructors = User::withCount('courses')
-        ->with(['instructor', 'courses.enrollments']) // Load courses with enrollments
+        ->with(['instructor', 'courses.enrollments']) 
         ->get()
         ->map(function ($instructor) {
-            // Calculate the total number of students for this instructor
             $totalStudents = $instructor->courses->sum(function ($course) {
                 return $course->enrollments->count();
             });
 
-            // Manually structure the course data
             $courses = $instructor->courses->map(function ($course) {
                 return [
                     'id' => $course->id,

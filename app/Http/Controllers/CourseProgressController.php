@@ -32,24 +32,19 @@ class CourseProgressController extends Controller
     {
         $user = Auth::user();
 
-        // Get the course with its lessons and lectures
         $course = Course::with('lessons.lectures')->findOrFail($courseId);
 
-        // Count the total lectures in the course
         $totalLectures = $course->lessons()->withCount('lectures')->get()->sum('lectures_count');
 
-        // Count the completed lectures for the user in this course
         $completedLectures = UserProgress::where('user_id', $user->id)
             ->where('course_id', $courseId)
             ->where('completed', true)
             ->count();
 
-        // Calculate progress percentage
         $progressPercentage = $totalLectures > 0 ? ($completedLectures / $totalLectures) * 100 : 0;
 
-        // Return progress as a JSON response
         return response()->json([
-            'progress_percentage' => round($progressPercentage, 2), // Round to two decimal points
+            'progress_percentage' => round($progressPercentage, 2),
             'total_lectures' => $totalLectures,
             'completed_lectures' => $completedLectures,
         ]);

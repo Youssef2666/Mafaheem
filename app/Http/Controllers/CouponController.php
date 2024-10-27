@@ -55,22 +55,18 @@ class CouponController extends Controller
             'course_id' => 'required|exists:courses,id',
         ]);
 
-        // Find the coupon by code
         $coupon = Coupon::where('code', $data['coupon_code'])->first();
 
         if (!$coupon || !$coupon->isValid() || !$coupon->hasRemainingUsage()) {
             return response()->json(['message' => 'Invalid or expired coupon'], 400);
         }
 
-        // Find the course
         $course = Course::findOrFail($data['course_id']);
 
-        // Check if this coupon is associated with this course
         if ($course->coupons->contains($coupon)) {
             return response()->json(['message' => 'Coupon already assigned to this course'], 400);
         }
 
-        // Assign the coupon to the course
         $course->coupons()->attach($coupon->id);
         return $this->success($course, 'Coupon assigned successfully');
 
@@ -83,26 +79,21 @@ class CouponController extends Controller
             'course_id' => 'required|exists:courses,id',
         ]);
 
-        // Find the coupon by code
         $coupon = Coupon::where('code', $data['coupon_code'])->first();
 
         if (!$coupon || !$coupon->isValid() || !$coupon->hasRemainingUsage()) {
             return response()->json(['message' => 'Invalid or expired coupon'], 400);
         }
 
-        // Find the course
         $course = Course::findOrFail($data['course_id']);
 
-        // Check if this coupon is associated with this course
         if (!$course->coupons->contains($coupon)) {
             return response()->json(['message' => 'Coupon not applicable to this course'], 400);
         }
 
-        // Apply the percentage discount
         $originalPrice = $course->price;
         $discountedPrice = $coupon->applyDiscount($originalPrice);
 
-        // Update usage count for the coupon
         $coupon->increment('usage_count');
 
         return response()->json([
